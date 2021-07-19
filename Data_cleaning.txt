@@ -1,0 +1,44 @@
+1. Swapping values in started_at and ended_at where traveling_time is less then 0 and join with a table where traveling_time >= 0
+
+--create a temporary table showing values of traveling time that is less than 0
+--it is noticed that the 3,211 values in started_at and ended_at are in the wrong places
+
+WITH new_table AS (
+    SELECT
+        ride_id,
+        rideable_type,
+        ended_at AS started_at, --renaming the "ended_at" column that contains started_at values to "started_at"
+        started_at AS ended_at, --renaming the "started_at" column that contains ended_at values to "ended_at values"
+        start_station_name,
+        end_station_name,
+        -(traveling_time) AS traveling_time, --since the values are still negative from the original data, adding a "-" in front would make negative values into positive.
+        customer_type
+    FROM cyclistic_data.trips_2020
+    WHERE
+        traveling_time < 0 --filtering data with negative traveling values
+)
+
+SELECT * FROM new_table -- view the table 
+UNION ALL
+(SELECT * FROM cyclistic_data.trips_2020 WHERE traveling time >= 0 )
+
+2. Checking for excess spacing or spelling mistake 
+
+SELECT
+    DISTINCT rideable_type/customer_type,      --check if there are any excissive spacing for each category
+FROM cyclistic_data2.trips_2020
+
+3. Checking duplicate values
+
+--check for duplicate rows
+
+SELECT 
+    (   SELECT COUNT(1) --counting the number of distinct rows
+        FROM
+            (SELECT DISTINCT * --create a sub table that only contains distinct rows
+             FROM cyclistic_data2.trips_2020) 
+        ) AS distinct_row,
+    (   SELECT COUNT(1) --counting all the rows in the dataset
+        FROM `bright-vision-315708.cyclistic_data.trip_06_2020`) AS total_row
+    
+
