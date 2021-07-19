@@ -1,0 +1,91 @@
+1. Create a new column identifying which day of the week the ride took place
+
+--creating a temporary table that identifies which day of the week is the ride)
+
+WITH day_of_week AS (
+    SELECT
+        ride_id,
+        CASE WHEN (EXTRACT(DAYOFWEEK FROM started_at)) = 1 THEN 'Sunday'
+             WHEN (EXTRACT(DAYOFWEEK FROM started_at)) = 2 THEN 'Monday'
+             WHEN (EXTRACT(DAYOFWEEK FROM started_at)) = 3 THEN 'Tuesday'
+             WHEN (EXTRACT(DAYOFWEEK FROM started_at)) = 4 THEN 'Wednesday'
+             WHEN (EXTRACT(DAYOFWEEK FROM started_at)) = 5 THEN 'Thursday'
+             WHEN (EXTRACT(DAYOFWEEK FROM started_at)) = 6 THEN 'Friday'
+             WHEN (EXTRACT(DAYOFWEEK FROM started_at)) = 7 THEN 'Saturday'
+        END AS day_of_week
+    FROM cyclistic_data.trips_2020        
+)
+
+--using full outer join to pull results from both table and incude a column with day of the week
+
+SELECT 
+   trips. *,
+   day.day_of_week 
+FROM cyclistic_data.trips_2020 AS trips
+FULL JOIN  day_of_week AS day
+ON trips.ride_id = day.ride_id
+ORDER BY
+    trips.started_at ASC
+	
+
+2. Calculate average duration per trip for each day of the week in 12 months
+
+SELECT
+   customer_type,
+   day_of_week,
+   ROUND(AVG(traveling_time),2) AS avg_time
+FROM
+   cyclistic_data.trips_2020
+GROUP BY
+  customer_type,
+  day_of_week
+
+
+3. Calculate the average traveling time per day for each month
+
+SELECT
+   customer_type,
+   EXTRACT(MONTH FROM started_at) AS month
+   ROUND(AVG(traveling_time),2) AS avg_time
+FROM
+   cyclistic_data.trips_2020
+GROUP BY
+  customer_type,
+  month
+ORDER BY
+  customer_type,
+  month
+
+
+4. Calculate total rides in each month
+
+SELECT
+   customer_type,
+   EXTRACT(MONTH FROM started_at) AS month
+   COUNT(*) AS num_of_rides
+FROM
+   cyclistic_data.trips_2020
+GROUP BY
+  customer_type,
+  month
+ORDER BY
+  customer_type,
+  month
+
+
+5. Calculate total traveling time in each month
+
+
+SELECT
+   customer_type,
+   EXTRACT(MONTH FROM started_at) AS month
+   COUNT(*) AS num_of_rides
+FROM
+   cyclistic_data.trips_2020
+GROUP BY
+  customer_type,
+  month
+ORDER BY
+  customer_type,
+  month
+
